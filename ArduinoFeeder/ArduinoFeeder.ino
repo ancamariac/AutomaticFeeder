@@ -1,6 +1,12 @@
 #include <UIPEthernet.h>
+#include<Servo.h>
 
 EthernetClient client;
+Servo myservo;
+
+int pos = 0;
+const int servoPin = 3;
+const int buttonPin = 2;
 
 byte server[] = { 192, 168, 1, 121 }; // local laptop ip
 
@@ -27,19 +33,30 @@ void setup() {
 }
 
 void feedSetup(){
-  pinMode(2, OUTPUT);
+  pinMode(buttonPin,INPUT);
+  myservo.attach(servoPin);
 }
 
 void feedCat(){
-  digitalWrite(2, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(1000);                       // wait for a second
-  digitalWrite(2, LOW);    // turn the LED off by making the voltage LOW
+  // rotire servo-motor la 180 grade
+  myservo.write(30);
+  delay(2000); // delay pentru momentul in care revine la pozitia initiala
+  myservo.write(180);
+  //delay(3000); // blocare buton 
 }
 
 void loop()
 {
+  int buttonVal = digitalRead(buttonPin);
 
-  
+  // SCENARIUL 1 : pisica apasa pe buton
+  if (buttonVal == LOW) {
+    feedCat();
+    delay(3000); // blocare buton 
+  }
+
+
+  // SCENARIUL 2 : comanda de hranire prin server
   // client.available() returneaza cati bytes pot fi cititi din buffer
   while (true){
     int sz = client.available();
@@ -56,7 +73,7 @@ void loop()
           feedCat();
         }
       }
-      
+          
       free(msg);
     } else {
       break;
