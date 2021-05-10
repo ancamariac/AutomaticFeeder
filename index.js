@@ -1,7 +1,7 @@
 // import telegram lib
-const Telegraf = require('telegraf').Telegraf 
-const BOT_TOKEN = '1838199642:AAFbYfFlTnZx5cf-4wVx6f9ACGjXB0qldeo';
-const bot = new Telegraf(BOT_TOKEN) // get the token from envirenment variable
+const Telegraf = require('telegraf').Telegraf
+require('dotenv').config()
+const bot = new Telegraf(process.env.BOT_TOKEN) // get the token from envirenment variable
 
 /*  messages   */
 const welcomeMessage = 'Welcome!🐱🐶 I am an Automatic Feeder Robot. Send me a command so I can feed your pet.'
@@ -34,6 +34,15 @@ bot.command('credits', ctx => {
 })
 
 /* /feed command  */
+bot.command('feed', ctx => {
+    if (GLOBALSOCKET != undefined){
+        sendReply('f');
+        ctx.reply("Ok, feeding cat now!");
+    }
+    else {
+        ctx.reply("Bot not connected!");
+    }
+})
 
 /* /info command  */
 
@@ -42,3 +51,28 @@ bot.command('credits', ctx => {
 
 // Run the bot
 bot.launch() // start
+
+
+var net = require('net');
+
+GLOBALSOCKET = undefined
+
+function sendReply(data){
+  GLOBALSOCKET.write(data);
+}
+
+var server = net.createServer(function(socket) {
+  socket.write('Echo server!!!\r\n');
+    socket.on('error', function(err) {
+        console.log("Error")
+        GLOBALSOCKET = undefined
+     })
+    socket.on('close', function(){
+        console.log("Socked closed")
+        GLOBALSOCKET = undefined
+    })
+    socket.on('data', function(data) { console.log(data.toString())});
+    GLOBALSOCKET = socket;
+});
+
+server.listen(1337, '0.0.0.0');
