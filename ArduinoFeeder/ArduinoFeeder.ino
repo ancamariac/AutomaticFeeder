@@ -17,11 +17,8 @@ void setup() {
   uint8_t mac[6] = {0x00,0x01,0x02,0x03,0x04,0x05};
   Ethernet.begin(mac); //Configure IP address via DHCP
 
-  // TODO: try to replace the IPAddress constructor with server variable from above
   if (client.connect(IPAddress(192,168,1,121), 1337)) {
     Serial.println("connected");
-    //client.println("GET /search?q=arduino HTTP/1.0");
-    // TODO : remove this as it is not used ( just for debugging )
     client.println("connected feeder!\n");
   } else {
     Serial.println("connection failed");
@@ -45,12 +42,24 @@ void feedCat(){
   //delay(3000); // blocare buton 
 }
 
+void reconnect() {
+  bool reconnected = false;
+  while (!reconnected) {
+    if (client.connect(IPAddress(192,168,1,121), 1337)) {
+      Serial.println("connected");
+      reconnected = true;
+    }
+  }
+}
+
 void loop()
 {
   int buttonVal = digitalRead(buttonPin);
 
   // SCENARIUL 1 : pisica apasa pe buton
   if (buttonVal == LOW) {
+    client.println("x");
+    client.flush();
     feedCat();
     delay(3000); // blocare buton 
   }
@@ -80,13 +89,10 @@ void loop()
     }
   }
 
-  // TODO : modify this so the arduino reconnects to server
-  // in case of failure.
   if (!client.connected()) {
     Serial.println();
     Serial.println("disconnecting.");
     client.stop();
-    for(;;)
-      ;
+    reconnect();
   }
 }

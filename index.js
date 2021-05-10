@@ -11,8 +11,6 @@ const helpMessage = 'You can control me by sending these commands:' +
 '/start - short intro\n' +
 '/help - show all the commands available\n' +
 '/feed - feed my Kara\n' +
-'/info - get information about the last time Kara was fed\n' +
-'/settime - set the time to open the feeder\n' +
 '/credits - and the 1st prize goes to ...\n'
 
 const creditsMessage = 'UPB-ACS project made by:\n\n' +
@@ -29,13 +27,14 @@ bot.help((ctx) => ctx.reply(helpMessage))
 /* /credits command  */
 bot.command('credits', ctx => {
     console.log(ctx.from)
+
     bot.telegram.sendMessage(ctx.chat.id, creditsMessage, {
     })
 })
 
 /* /feed command  */
 bot.command('feed', ctx => {
-    if (GLOBALSOCKET != undefined){
+    if (GLOBALSOCKET != undefined) {
         sendReply('f');
         ctx.reply("Ok, feeding cat now!");
     }
@@ -44,14 +43,20 @@ bot.command('feed', ctx => {
     }
 })
 
-/* /info command  */
-
-/* /settime command  */
-
 
 // Run the bot
 bot.launch() // start
 
+/* var x = new Date();
+
+// feed cat everyday at 6:30 PM
+function intervalFunc() {
+    if (x.getHours() == 23 && x.getMinutes() == 30 && x.getSeconds() == 1 ) {
+        sendReply('f');
+    }
+}
+  
+setInterval(intervalFunc, 1000); */
 
 var net = require('net');
 
@@ -60,7 +65,7 @@ GLOBALSOCKET = undefined
 function sendReply(data){
   GLOBALSOCKET.write(data);
 }
-
+var isPressed = false;
 var server = net.createServer(function(socket) {
   socket.write('Echo server!!!\r\n');
     socket.on('error', function(err) {
@@ -71,7 +76,17 @@ var server = net.createServer(function(socket) {
         console.log("Socked closed")
         GLOBALSOCKET = undefined
     })
-    socket.on('data', function(data) { console.log(data.toString())});
+    socket.on('data', function(data) {
+        var isPressed = false;
+        for (const item of data) {
+            if (item == 120) {
+                isPressed = true;
+            }
+        }
+        if (isPressed) {
+            bot.telegram.sendMessage(924411068, "Kara was fed by herself.")
+        }
+    });
     GLOBALSOCKET = socket;
 });
 
