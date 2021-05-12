@@ -70,8 +70,6 @@ void loop()
   while (true){
     int sz = client.available();
     if (sz > 0){
-      //char c = client.read();
-      // TODO : might want to do dynamic allocation once.
       uint8_t* msg = (uint8_t*)malloc(sz+1);
       memset(msg, 0, sz+1);
       sz = client.read(msg,sz);

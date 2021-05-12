@@ -84,7 +84,7 @@ var server = net.createServer(function(socket) {
             }
         }
         if (isPressed) {
-            bot.telegram.sendMessage(924411068, "Kara was fed by herself.")
+            bot.telegram.sendMessage(process.env.TELEGRAM_ID, "Kara was fed by herself.")
         }
     });
     GLOBALSOCKET = socket;
