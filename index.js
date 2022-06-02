@@ -1,11 +1,17 @@
 // import telegram lib
 const Telegraf = require('telegraf').Telegraf
 require('dotenv').config()
-const bot = new Telegraf(process.env.BOT_TOKEN) // get the token from envirenment variable
+// Am folosit .env pentru a pastra TOKEN-ul botului in siguranta (commit-uri)
+// Instantierea botuluib de Telegram folosind TOKEN-ul (din aplicatie)
+const bot = new Telegraf(process.env.BOT_TOKEN) 
 
-/*  messages   */
+// Mesajele de reply (initializare stringuri)
+// pentru bot-ul de Telegram
+
+// Mesaj de hello
 const welcomeMessage = 'Welcome!🐱🐶 I am an Automatic Feeder Robot. Send me a command so I can feed your pet.'
 
+// Mesaj de help
 const helpMessage = 'You can control me by sending these commands:' +
 '\n\n' +
 '/start - short intro\n' +
@@ -13,13 +19,14 @@ const helpMessage = 'You can control me by sending these commands:' +
 '/feed - feed my Kara\n' +
 '/credits - and the 1st prize goes to ...\n'
 
+// Mesaj de credits
 const creditsMessage = 'UPB-ACS project made by:\n\n' +
-'🔵 Ciuciu Anca-Maria\n' +
-'🔵 Mihaila Iuliana-Raluca\n' + 
-'🔵 Ursu Catalin Emilian\n'
+'👩‍💻 Ciuciu Anca-Maria\n' +
+'🏫 Facultatea de Automatică și Calculatoare\n' 
+
 
 /* /start command   */
-bot.start((ctx) => ctx.reply(welcomeMessage)) // display Welcome text when we start bot
+bot.start((ctx) => ctx.reply(welcomeMessage)) 
 
 /* /help command  */
 bot.help((ctx) => ctx.reply(helpMessage))
@@ -46,17 +53,6 @@ bot.command('feed', ctx => {
 
 // Run the bot
 bot.launch() // start
-
-/* var x = new Date();
-
-// feed cat everyday at 6:30 PM
-function intervalFunc() {
-    if (x.getHours() == 23 && x.getMinutes() == 30 && x.getSeconds() == 1 ) {
-        sendReply('f');
-    }
-}
-  
-setInterval(intervalFunc, 1000); */
 
 var net = require('net');
 

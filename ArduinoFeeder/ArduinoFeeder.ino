@@ -8,7 +8,7 @@ int pos = 0;
 const int servoPin = 3;
 const int buttonPin = 2;
 
-byte server[] = { 192, 168, 1, 121 }; // local laptop ip
+byte server[] = { 192, 168, 1, 100 }; // local laptop ip
 
 void setup() {
   Serial.begin(9600);
@@ -17,8 +17,8 @@ void setup() {
   uint8_t mac[6] = {0x00,0x01,0x02,0x03,0x04,0x05};
   Ethernet.begin(mac); //Configure IP address via DHCP
 
-  if (client.connect(IPAddress(192,168,1,121), 1337)) {
-    Serial.println("connected");
+  if (client.connect(IPAddress(192,168,1,100), 1337)) {
+    Serial.println("Connected.");
     client.println("connected feeder!\n");
   } else {
     Serial.println("connection failed");
@@ -45,7 +45,7 @@ void feedCat(){
 void reconnect() {
   bool reconnected = false;
   while (!reconnected) {
-    if (client.connect(IPAddress(192,168,1,121), 1337)) {
+    if (client.connect(IPAddress(192,168,1,100), 1337)) {
       Serial.println("connected");
       reconnected = true;
     }
@@ -58,10 +58,11 @@ void loop()
 
   // SCENARIUL 1 : pisica apasa pe buton
   if (buttonVal == LOW) {
+    Serial.println("The button was pushed!");
     client.println("x");
     client.flush();
     feedCat();
-    delay(3000); // blocare buton 
+    delay(100); // blocare buton 
   }
 
 
